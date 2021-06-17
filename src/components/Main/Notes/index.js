@@ -2,9 +2,9 @@ import React from 'react'
 
 const Notes = () => {
     return (
-        <div>
-            Notes
-        </div>
+        <main className="p-3 flex flex-1 h-full">
+            Note Component
+        </main>
     )
 }
 

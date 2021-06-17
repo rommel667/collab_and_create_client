@@ -9,6 +9,7 @@ import { useParams } from 'react-router';
 import { MOVE_TASK_COLUMN_SUBSCRIPTION, NEW_TASK_SUBSCRIPTION, MOVE_TASK_SUBSCRIPTION } from './graphql/task';
 import { FETCH_COLLEAGUES } from './graphql/dev';
 import { PROJECTS_BY_USER, PROJECT_TASKS } from './graphql/projects';
+import { newTaskSubNewData } from './utils/taskFunctions';
 // import { Offline, Online } from "react-detect-offline";
 
 
@@ -49,9 +50,7 @@ const App = () => {
         });
         if (data) {
           console.log("PROJECT INFO");
-          const targetColumn = data.projectInfo.taskColumns.find(col => col._id === subscriptionData.data.newTask.columnId)
-          const updatedTasks = [...targetColumn.tasks, subscriptionData.data.newTask]
-          const updatedColumn = { ...targetColumn, tasks: [...updatedTasks] }
+          const updatedColumn = newTaskSubNewData(data.projectInfo, subscriptionData)
           client.writeQuery({
             query: PROJECT_TASKS,
             variables: { projectId },
@@ -75,10 +74,9 @@ const App = () => {
             console.log("PROJECT BY USER");
             const filteredProjects = data1.projectsByUser.filter(p => p._id !== subscriptionData.data.newTask.projectId)
             console.log(filteredProjects);
+            
             const targetProject = data1.projectsByUser.find(p => p._id === subscriptionData.data.newTask.projectId)
-            const targetColumn = targetProject.taskColumns.find(col => col._id === subscriptionData.data.newTask.columnId)
-            const updatedTasks = [...targetColumn.tasks, subscriptionData.data.newTask]
-            const updatedColumn = { ...targetColumn, tasks: [...updatedTasks] }
+            const updatedColumn = newTaskSubNewData(targetProject, subscriptionData)
             const updatedProject = {
               ...targetProject, taskColumns: [
                 ...targetProject.taskColumns.filter(col => col._id !== subscriptionData.data.newTask.columnId), updatedColumn

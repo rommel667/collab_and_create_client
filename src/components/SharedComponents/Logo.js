@@ -7,7 +7,7 @@ const Logo = () => {
         <text x="0" y="40" className="text-5xl font-bold">C</text>
         <text x="11" y="32" className="text-2xl font-semibold">C</text>
       </svg>
-      <h3 className="text-indigo-600 text-xl font-bold">Collab&Create</h3>
+      <h3 className="hidden sm:block text-indigo-600 text-xl font-bold">Collab&Create</h3>
 
     </div>
 

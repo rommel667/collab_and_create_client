@@ -41,4 +41,28 @@ mutation newNoteCategory(
 
 `
 
+export const NEW_NOTE = gql`
+mutation newNote(
+    $description: String!
+    $categoryId: ID!
+    $projectId: ID!
+) {
+    newNote( description: $description, categoryId: $categoryId, projectId: $projectId ) {
+        _id
+        description
+        categoryId
+        projectId,
+        createdBy {
+          _id
+          name
+          email
+          photo
+        }
+        createdAt
+        updatedAt
+    }
+}
+
+`
+
 //SUBSCRIPTIONS

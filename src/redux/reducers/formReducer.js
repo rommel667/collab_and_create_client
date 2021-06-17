@@ -20,6 +20,11 @@ const initialState = {
         categoryName: "",
         projectId: ""
     },
+    newNote: {
+        description: "",
+        categoryId: "",
+        projectId: ""
+    },
 }
 
 
@@ -138,6 +143,26 @@ const form = (state = initialState, action) => {
                 newNote: {
                     ...state.newNote,
                     projectId: action.payload.projectId
+                }
+            }
+        }
+
+        //FOR NOTES
+        case "UPDATE_NOTE_INPUT": {
+            return {
+                ...state,
+                newNote: {
+                    ...state.newNote,
+                    [action.payload.name]: action.payload.value
+                }
+            }
+        }
+        case "NOTE_CATEGORY_ID": {
+            return {
+                ...state,
+                newNote: {
+                    ...state.newNote,
+                    categoryId: action.payload.categoryId
                 }
             }
         }

@@ -12,7 +12,7 @@ const BottomLeftLabel = ({ path, projectData }) => {
             {path === "tasks" &&
                 <div>
                     <div>
-                        <h1 className="text-xl font-semibold text-gray-900 leading-tight">
+                        <h1 className="dark:text-gray-300 text-xl font-semibold text-gray-700 leading-tight">
                             {/* {`${path.charAt(0).toUpperCase() + path.slice(1)} for ${projectData?.projectName}`} */}
                             {currentProject && `Tasks for ${currentProject?.projectName}`}
                         </h1>
@@ -22,7 +22,7 @@ const BottomLeftLabel = ({ path, projectData }) => {
                             return (
                                 <img
                                     key={member._id}
-                                    className="h-6 w-6 rounded-full object-cover border-2 border-white -ml-3"
+                                    className="dark:border-gray-800 h-6 w-6 rounded-full object-cover border-2 border-white -ml-3"
                                     src={member.photo} alt="profile" />
                             )
                         })}
@@ -32,7 +32,7 @@ const BottomLeftLabel = ({ path, projectData }) => {
             {path === "projects" &&
                 <div className="py-2">
                     <div>
-                        <h1 className="text-2xl font-semibold text-gray-900 leading-tight">
+                        <h1 className="dark:text-gray-300 text-2xl font-semibold text-gray-700 leading-tight">
                             {`${path.charAt(0).toUpperCase() + path.slice(1)}`}
                         </h1>
                     </div>

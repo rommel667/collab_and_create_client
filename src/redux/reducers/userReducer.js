@@ -18,7 +18,7 @@ if (localStorage.getItem("token") || sessionStorage.getItem("token")) {
 const user = (state = initialState, action) => {
     
     switch(action.type) {
-        case "LOGIN": {
+        case "GOOGLE_LOGIN": {
             localStorage.setItem("token", action.payload.user.token)
             return {
                 ...state,
@@ -42,6 +42,8 @@ const user = (state = initialState, action) => {
         case "LOGOUT": {
             localStorage.removeItem("token")
             localStorage.removeItem("rememberMe")
+            sessionStorage.removeItem("token")
+            sessionStorage.removeItem("rememberMe")
             return {
                 user: null,
             }

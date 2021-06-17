@@ -35,7 +35,7 @@ const Login = () => {
 
   const [googleSignin] = useMutation(SIGN_IN_WITH_GOOGLE, {
     update(proxy, result) {
-      dispatch({ type: "LOGIN", payload: { user: result.data.signInWithGoogle } })
+      dispatch({ type: "GOOGLE_LOGIN", payload: { user: result.data.signInWithGoogle } })
     },
     // onError(err) {
     //   setError(err.graphQLErrors[0].message.split(': ')[1]);

@@ -53,7 +53,7 @@ const HeaderWithUser = ({ user }) => {
     }
 
     return (
-        <header className="px-6 py-1 border-b-2 border-gray-200">
+        <header className="dark:bg-gray-800 px-6 py-1 border-b-2 border-gray-200">
             <TopHeader />
             <BottomHeader
                 setOpenNewProjectModal={() => setOpenNewProjectModal(true)}

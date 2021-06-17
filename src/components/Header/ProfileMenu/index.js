@@ -5,7 +5,7 @@ import MenuItems from './MenuItems'
 
 const ProfileMenu = () => {
     return (
-        <Menu as="div" className="ml-3 relative">
+        <Menu as="div" className="relative">
             {({ open }) => (
                 <>
                     <Badge open={open} />

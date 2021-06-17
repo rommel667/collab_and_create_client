@@ -23,7 +23,7 @@ const Notification = () => {
 
 
     return (
-        <Menu  as="div" className="ml-3 relative mt-2">
+        <Menu  as="div" className="relative mt-2">
             {({ open }) => (
                 <div className="">
                     <Badge show={show} projectInvites={projectInvites} setShow={() => setShow(!show)} />

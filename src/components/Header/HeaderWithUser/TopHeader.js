@@ -1,6 +1,7 @@
 import React from 'react'
 import Notification from '../NotificationMenu'
 import ProfileMenu from '../ProfileMenu'
+import ThemeToggle from '../ThemeToggle'
 
 const TopHeader = () => {
     return (
@@ -12,9 +13,9 @@ const TopHeader = () => {
                 <input className="placeholder-gray-600 text-gray-900 rounded-md border border-gray-400 py-1 pl-8 focus:outline-none" placeholder="Search" />
             </div>
             <div className="flex justify-between items-center gap-3">
-
+            <ThemeToggle />
                 <Notification />
-
+                
                 <ProfileMenu />
 
 

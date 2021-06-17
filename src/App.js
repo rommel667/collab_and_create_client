@@ -9,6 +9,7 @@ import { useParams } from 'react-router';
 import { MOVE_TASK_COLUMN_SUBSCRIPTION, NEW_TASK_SUBSCRIPTION, MOVE_TASK_SUBSCRIPTION } from './graphql/task';
 import { FETCH_COLLEAGUES } from './graphql/dev';
 import { PROJECTS_BY_USER, PROJECT_TASKS } from './graphql/projects';
+import Theme from './components/Theme';
 // import { Offline, Online } from "react-detect-offline";
 
 
@@ -223,15 +224,18 @@ const App = () => {
 
 
   return (
-    <div className="h-screen flex overflow-hidden">
-      {user && <LeftMenu />}
-      <div className="bg-white flex flex-col flex-1 min-w-0 flex-shrink-0">
-        <Header user={user} />
-        {user && <Main user={user} />}
-        {/* <Offline><h1>Please check your network status</h1></Offline> */}
-        <Homepage user={user} projectId={projectId} />
+    <Theme>
+      <div className="h-screen flex overflow-hidden">
+        {user && <LeftMenu />}
+        <div className="bg-white flex flex-col flex-1 min-w-0 flex-shrink-0">
+          <Header user={user} />
+          {user && <Main user={user} />}
+          {/* <Offline><h1>Please check your network status</h1></Offline> */}
+          <Homepage user={user} projectId={projectId} />
+        </div>
+
       </div>
-    </div>
+    </Theme>
   );
 }
 

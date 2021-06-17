@@ -5,6 +5,7 @@ import notificatioReducer from './notificationReducer'
 import projectReducer from './projectReducer'
 import taskReducer from './taskReducer'
 import devReducer from './devReducer'
+import themeReducer from './themeReducer'
 
 
 const rootReducer = combineReducers({
@@ -14,6 +15,7 @@ const rootReducer = combineReducers({
     project: projectReducer,
     task: taskReducer,
     dev: devReducer,
+    theme: themeReducer,
 })
 
 export default rootReducer

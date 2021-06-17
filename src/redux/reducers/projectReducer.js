@@ -37,6 +37,19 @@ const project = (state = initialState, action) => {
                 projectData: action.payload.project
             }
         }
+        case "NEW_TASK_SUBSCRIPTION_PROJECT_UPDATE": {
+            const filteredProjects = state.projects?.filter(project => project._id !== action.payload.project._id )
+            const newProjects = [ ...filteredProjects, action.payload.project ].sort( (a, b) => {
+                const d1 = new Date(a.createdAt)
+                const d2 = new Date(b.createdAt)
+                return d1.getTime() - d2.getTime()
+            } )
+            return {
+                ...state,
+                projects: newProjects,
+                projectData: action.payload.project
+            }
+        }
         case "MOVE_TASK_SUBSCRIPTION_PROJECT_UPDATE": {
             const filteredProjects = state.projects?.filter(project => project._id !== action.payload.project._id )
             const newProjects = [ ...filteredProjects, action.payload.project ].sort( (a, b) => {

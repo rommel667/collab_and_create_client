@@ -9,7 +9,7 @@ import { useParams } from 'react-router';
 import { MOVE_TASK_COLUMN_SUBSCRIPTION, NEW_TASK_SUBSCRIPTION, MOVE_TASK_SUBSCRIPTION } from './graphql/task';
 import { FETCH_COLLEAGUES } from './graphql/dev';
 import { PROJECTS_BY_USER, PROJECT_TASKS } from './graphql/projects';
-import { newTaskSubNewData } from './utils/taskFunctions';
+import { moveTaskSubNewData, newTaskSubNewData } from './utils/taskFunctions';
 // import { Offline, Online } from "react-detect-offline";
 
 
@@ -18,7 +18,6 @@ const App = () => {
   const dispatch = useDispatch()
   const user = useSelector(state => state.user.user)
   const { projectId } = useParams()
-
 
   const { data: colleaguesData } = useQuery(
     FETCH_COLLEAGUES,
@@ -62,7 +61,7 @@ const App = () => {
             }
           });
           dispatch({
-            type: "SELECTED_PROJECT_DATA", payload: {
+            type: "NEW_TASK_SUBSCRIPTION_PROJECT_UPDATE", payload: {
               project: {
                 ...data.projectInfo,
                 taskColumns: [...data.projectInfo.taskColumns.filter(col => col._id !== subscriptionData.data.newTask.columnId), updatedColumn]
@@ -73,8 +72,6 @@ const App = () => {
           if (data1) {
             console.log("PROJECT BY USER");
             const filteredProjects = data1.projectsByUser.filter(p => p._id !== subscriptionData.data.newTask.projectId)
-            console.log(filteredProjects);
-            
             const targetProject = data1.projectsByUser.find(p => p._id === subscriptionData.data.newTask.projectId)
             const updatedColumn = newTaskSubNewData(targetProject, subscriptionData)
             const updatedProject = {
@@ -118,17 +115,7 @@ const App = () => {
         });
         if (data) {
           console.log("PROJECT INFO");
-          const filteredColumns = data.projectInfo.taskColumns.filter(col => col._id !== sourceColumnId && col._id !== destinationColumnId)
-          const sourceColumn = data.projectInfo.taskColumns.find(col => col._id === sourceColumnId)
-          const targetTask = sourceColumn.tasks.find(task => task._id === taskId)
-          const updatedSourceColumn = { ...sourceColumn, tasks: [...sourceColumn.tasks.filter(task => task._id !== taskId)] }
-          const destinationColumn = data.projectInfo.taskColumns.find(col => col._id === destinationColumnId)
-          const updatedDestinationColumn = { ...destinationColumn, tasks: [targetTask, ...destinationColumn.tasks] }
-          const updatedTaskColumns = [
-            ...filteredColumns,
-            updatedSourceColumn,
-            updatedDestinationColumn
-          ]
+          const updatedTaskColumns =  moveTaskSubNewData(data.projectInfo, sourceColumnId, destinationColumnId, taskId)
           const newData = {
             ...data.projectInfo, taskColumns: [...updatedTaskColumns]
           }
@@ -149,17 +136,7 @@ const App = () => {
             console.log("PROJECT BY USER");
             const filteredProjects = data1.projectsByUser.filter(p => p._id !== projectId)
             const targetProject = data1.projectsByUser.find(p => p._id === projectId)
-            const filteredColumns = targetProject.taskColumns.filter(col => col._id !== sourceColumnId && col._id !== destinationColumnId)
-            const sourceColumn = targetProject.taskColumns.find(col => col._id === sourceColumnId)
-            const targetTask = sourceColumn.tasks.find(task => task._id === taskId)
-            const updatedSourceColumn = { ...sourceColumn, tasks: [...sourceColumn.tasks.filter(task => task._id !== taskId)] }
-            const destinationColumn = targetProject.taskColumns.find(col => col._id === destinationColumnId)
-            const updatedDestinationColumn = { ...destinationColumn, tasks: [targetTask, ...destinationColumn.tasks] }
-            const updatedTaskColumns = [
-              ...filteredColumns,
-              updatedSourceColumn,
-              updatedDestinationColumn
-            ]
+            const updatedTaskColumns =  moveTaskSubNewData(targetProject, sourceColumnId, destinationColumnId, taskId)
             const newData = {
               ...targetProject, taskColumns: [...updatedTaskColumns]
             }

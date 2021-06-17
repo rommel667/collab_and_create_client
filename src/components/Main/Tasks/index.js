@@ -11,7 +11,6 @@ import ModalComponent from '../../SharedComponents/ModalComponent'
 import { PROJECTS_BY_USER, PROJECT_TASKS } from '../../../graphql/projects'
 
 
-
 const Tasks = () => {
 
     const dispatch = useDispatch()
@@ -38,7 +37,7 @@ const Tasks = () => {
         if(projects === null) {
             fetchProjects()
         }
-        dispatch({ type: "UPDATE_PROJECT_ID", payload: { projectId } })
+        dispatch({ type: "UPDATE_PROJECT_ID_FOR_TASK", payload: { projectId } })
         
     }, [])
 

@@ -4,6 +4,7 @@ import formReducer from './formReducer'
 import notificatioReducer from './notificationReducer'
 import projectReducer from './projectReducer'
 import taskReducer from './taskReducer'
+import noteReducer from './noteReducer'
 import devReducer from './devReducer'
 
 
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
     notification: notificatioReducer,
     project: projectReducer,
     task: taskReducer,
+    note: noteReducer,
     dev: devReducer,
 })
 

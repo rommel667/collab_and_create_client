@@ -16,6 +16,10 @@ const initialState = {
         columnId: "",
         projectId: ""
     },
+    newNoteCategory: {
+        categoryName: "",
+        projectId: ""
+    },
 }
 
 
@@ -70,7 +74,7 @@ const form = (state = initialState, action) => {
                 }
             }
         }
-        case "UPDATE_PROJECT_ID": {
+        case "UPDATE_PROJECT_ID_FOR_TASK": {
             return {
                 ...state,
                 newTaskColumn: {
@@ -113,6 +117,31 @@ const form = (state = initialState, action) => {
             }
         }
 
+
+        //FOR NOTE CATEGORY
+        case "UPDATE_NOTE_CATEGORY_INPUT": {
+            return {
+                ...state,
+                newNoteCategory: {
+                    ...state.newNoteCategory,
+                    [action.payload.name]: action.payload.value
+                }
+            }
+        }
+        case "UPDATE_PROJECT_ID_FOR_NOTE": {
+            return {
+                ...state,
+                newNoteCategory: {
+                    ...state.newNoteCategory,
+                    projectId: action.payload.projectId
+                },
+                newNote: {
+                    ...state.newNote,
+                    projectId: action.payload.projectId
+                }
+            }
+        }
+
         //FOR ALL FORMS
         case "RESET_INPUTS": {
             return {
@@ -126,6 +155,10 @@ const form = (state = initialState, action) => {
                     ...state.newTask,
                     description: "",
                     inCharge: [],
+                },
+                newNoteCategory: {
+                    ...state.newNoteCategory,
+                    categoryName: ""
                 },
             }
         }

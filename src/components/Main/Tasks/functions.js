@@ -30,3 +30,22 @@ export const getItemStyle = (isDragging, draggableStyle) => ({
     // styles we need to apply on draggables
     ...draggableStyle
 });
+
+
+export const moveTaskNewData = (data, sourceColumnId, destinationColumnId, taskId) => {
+    const filteredColumns = data.projectInfo.taskColumns.filter(col => col._id !== sourceColumnId && col._id !== destinationColumnId)
+    const sourceColumn = data.projectInfo.taskColumns.find(col => col._id === sourceColumnId)
+    const targetTask = sourceColumn.tasks.find(task => task._id === taskId)
+    const updatedSourceColumn = { ...sourceColumn, tasks: [...sourceColumn.tasks.filter(task => task._id !== taskId)] }
+    const destinationColumn = data.projectInfo.taskColumns.find(col => col._id === destinationColumnId)
+    const updatedDestinationColumn = { ...destinationColumn, tasks: [targetTask, ...destinationColumn.tasks] }
+    const updatedTaskColumns = [
+        ...filteredColumns,
+        updatedSourceColumn,
+        updatedDestinationColumn
+    ]
+    const newData = {
+        ...data.projectInfo, taskColumns: [...updatedTaskColumns]
+    }
+    return newData
+}

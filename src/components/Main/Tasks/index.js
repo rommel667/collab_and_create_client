@@ -5,7 +5,7 @@ import { useParams } from 'react-router-dom'
 import { MOVE_TASK, NEW_TASK, MOVE_TASK_COLUMN } from '../../../graphql/task'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import DroppableComponent from './DroppableComponent'
-import { getItemStyle, move, reorder } from './functions'
+import { getItemStyle, move, moveTaskNewData, reorder } from './functions'
 import NewTask from '../../Forms/NewTask'
 import ModalComponent from '../../SharedComponents/ModalComponent'
 import { PROJECTS_BY_USER, PROJECT_TASKS } from '../../../graphql/projects'
@@ -52,20 +52,7 @@ const Tasks = () => {
                 variables: { projectId },
             });
             if (data) {
-                const filteredColumns = data.projectInfo.taskColumns.filter(col => col._id !== sourceColumnId && col._id !== destinationColumnId)
-                const sourceColumn = data.projectInfo.taskColumns.find(col => col._id === sourceColumnId)
-                const targetTask = sourceColumn.tasks.find(task => task._id === taskId)
-                const updatedSourceColumn = { ...sourceColumn, tasks: [...sourceColumn.tasks.filter(task => task._id !== taskId)] }
-                const destinationColumn = data.projectInfo.taskColumns.find(col => col._id === destinationColumnId)
-                const updatedDestinationColumn = { ...destinationColumn, tasks: [targetTask, ...destinationColumn.tasks] }
-                const updatedTaskColumns = [
-                    ...filteredColumns,
-                    updatedSourceColumn,
-                    updatedDestinationColumn
-                ]
-                const newData = {
-                    ...data.projectInfo, taskColumns: [...updatedTaskColumns]
-                }
+                const newData = moveTaskNewData(data, sourceColumnId, destinationColumnId, taskId)
                 proxy.writeQuery({
                     query: PROJECT_TASKS,
                     variables: { projectId },
@@ -75,9 +62,6 @@ const Tasks = () => {
             } else {
                 return
             }
-
-            
-
             // PENDING DISPATCH SOLUTION IF UPDATE FAILED ON SERVER/DB
         },
         // variables & updateTaskColumns for moved task for the redux state dispatch @ onDragEnd function

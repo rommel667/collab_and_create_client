@@ -19,6 +19,7 @@
     "react-detect-offline": "^2.4.4",
     "react-dom": "^17.0.2",
     "react-google-login": "^5.2.2",
+    "react-icons": "^4.2.0",
     "react-multi-select-component": "^4.0.2",
     "react-redux": "^7.2.4",
     "react-router-dom": "^5.2.0",

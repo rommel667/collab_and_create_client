@@ -5,7 +5,7 @@ import Button from '../SharedComponents/Button'
 import LoginFooter from './LoginFooter'
 import AuthHeader from './AuthHeader'
 import { useMutation } from '@apollo/client'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { LOGIN_USER, SIGN_IN_WITH_GOOGLE } from '../../graphql/auth'
 import GoogleLogin from 'react-google-login'
 
@@ -14,6 +14,8 @@ const Login = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [ rememberMe, setRememberMe ] = useState(false)
+
+  const darkMode = useSelector(state => state.theme.darkMode)
 
  
   const dispatch = useDispatch()
@@ -31,7 +33,6 @@ const Login = () => {
     }
   })
 
-  console.log(process.env.REACT_APP_GOOGLE_CLIENT_ID);
 
   const [googleSignin] = useMutation(SIGN_IN_WITH_GOOGLE, {
     update(proxy, result) {
@@ -61,7 +62,7 @@ const Login = () => {
 
 
   return (
-    <div className="bg-white min-h-screen flex justify-center py-12 px-4 sm:px-6 lg:px-8">
+    <div className="dark:bg-gray-700 bg-white min-h-screen flex justify-center py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
 
         <AuthHeader
@@ -122,7 +123,7 @@ const Login = () => {
           cookiePolicy={'single_host_origin'}
           onSuccess={responseGoogle}
           onFailure={responseGoogle}
-          theme="dark"
+          theme={darkMode && "dark"}
         />
         {/* tqxDTemkN114aUeHrX1n-Mpr */}
       </div>

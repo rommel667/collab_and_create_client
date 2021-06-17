@@ -16,9 +16,9 @@ const LoginFooter = ({ rememberMe, setRememberMe }) => {
           id="remember_me"
           name="remember_me"
           type="checkbox"
-          className="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
+          className=" h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded"
         />
-        <label htmlFor="remember_me" className="ml-2 block text-sm text-gray-900">
+        <label htmlFor="remember_me" className="dark:text-gray-300 ml-2 block text-sm text-gray-700">
           Remember me
         </label>
       </div>
@@ -26,7 +26,7 @@ const LoginFooter = ({ rememberMe, setRememberMe }) => {
       <div className="text-sm">
         <p
           onClick={() => history.push('/forgotPassword')}
-          className="font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
+          className="dark:text-indigo-400 font-medium text-indigo-600 hover:text-indigo-500 cursor-pointer">
           Forgot your password?
         </p>
       </div>

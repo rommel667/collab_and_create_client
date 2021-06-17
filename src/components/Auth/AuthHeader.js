@@ -9,7 +9,7 @@ const AuthHeader = ({ headerText }) => {
             <text x="11" y="32" className="text-2xl font-semibold">C</text>
           </svg> */}
 
-        <h2 className="mt-6 text-center text-3xl font-extrabold dark:text-white-900 text-gray-900">{headerText}</h2>
+        <h2 className="mt-6 text-center text-3xl font-semibold dark:text-gray-300 text-gray-700">{headerText}</h2>
       </div>
     )
 }

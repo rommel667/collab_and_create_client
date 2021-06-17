@@ -4,7 +4,7 @@ const initialState = {
 
 
 const theme = (state = initialState, action) => {
-
+    console.log(action);
     switch(action.type) {
         case "TOGGLE_MODE": {
             return {

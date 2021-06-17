@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 const Theme = ({ children }) => {
@@ -7,17 +7,19 @@ const Theme = ({ children }) => {
     const darkMode = useSelector(state => state.theme.darkMode)
 
     useEffect(() => {
-        if(localStorage.getItem('theme')) {
-            dispatch({ type: "TOGGLE_MODE", payload: { darkMode: localStorage.getItem('theme') } })
+        console.log(localStorage);
+        if(localStorage.theme) {
+            console.log("WHY", localStorage.theme);
+            dispatch({ type: "TOGGLE_MODE", payload: { darkMode: localStorage.theme } })
         } else {
             dispatch({ type: "TOGGLE_MODE", payload: { darkMode: false } })
-            localStorage.setItem("theme", false)
+            localStorage.removeItem("theme")
         }
     }, [])
 
 
     return (
-        <div className={darkMode ? "dark" : ""}>
+        <div className={darkMode && "dark"}>
             {children}
         </div>
     )

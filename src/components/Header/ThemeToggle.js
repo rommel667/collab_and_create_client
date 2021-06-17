@@ -8,13 +8,13 @@ const ThemeToggle = () => {
     const darkMode = useSelector(state => state.theme.darkMode)
 
     const darkOn = () => {
-        dispatch({ type: "TOGGLE_MODE", payload: { darkMode: false } })
-        localStorage.setItem("theme", false)
+        dispatch({ type: "TOGGLE_MODE", payload: { darkMode: true } })
+        localStorage.setItem("theme", true)
     }
 
     const darkOff = () => {
-        dispatch({ type: "TOGGLE_MODE", payload: { darkMode: true } })
-        localStorage.setItem("theme", true)
+        dispatch({ type: "TOGGLE_MODE", payload: { darkMode: false } })
+        localStorage.removeItem("theme")
     }
 
     return (
@@ -22,11 +22,11 @@ const ThemeToggle = () => {
             {darkMode ?
                 <BsFillBrightnessHighFill
                     className="w-6 h-6 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110"
-                    onClick={darkOn}
+                    onClick={darkOff}
                 /> :
                 <BsMoon
                     className="text-gray-700 w-6 h-6 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110"
-                    onClick={darkOff}
+                    onClick={darkOn}
                 />}
         </div>
     )

@@ -19,7 +19,6 @@ const App = () => {
   const user = useSelector(state => state.user.user)
   const { projectId } = useParams()
 
-
   const { data: colleaguesData } = useQuery(
     FETCH_COLLEAGUES,
     {
@@ -225,7 +224,7 @@ const App = () => {
 
   return (
     <Theme>
-      <div className="h-screen flex overflow-hidden">
+      <div className=" h-screen flex overflow-hidden">
         {user && <LeftMenu />}
         <div className="bg-white flex flex-col flex-1 min-w-0 flex-shrink-0">
           <Header user={user} />

@@ -47,6 +47,7 @@ const Project = ({ projects, _id, projectName, description, icon, confirmedMembe
             <Link className="absolute left-4 -top-6" to={`/tasks/${_id}`} onClick={getProjectData}>
                 {projectIcons.find(i => i.iconName === icon).component({ padding: 1, iconSize: 4 })}
             </Link>
+            
 
             <div className="mt-2">
                 <p className="text-xl font-semibold my-2">{projectName}</p>
@@ -64,6 +65,9 @@ const Project = ({ projects, _id, projectName, description, icon, confirmedMembe
                     {progress && <Progress progress={progress} />}
                 </div>
             </div>
+            <Link className="" to={`/notes/${_id}`} onClick={getProjectData}>
+            <button>notes</button>
+            </Link>
         </div>
     )
 }

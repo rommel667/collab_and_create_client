@@ -21,10 +21,10 @@ mutation newNoteCategory(
         email
         photo
       }
-      tasks {
+      notes {
         _id
         description
-        columnId
+        categoryId
         createdBy {
           _id
           name
@@ -61,6 +61,35 @@ mutation newNote(
         createdAt
         updatedAt
     }
+}
+
+`
+
+export const MOVE_NOTE_CATEGORY = gql`
+mutation moveNoteCategory(
+    $noteCategoryIds: [ID]!
+    $projectId: ID!
+) {
+  moveNoteCategory(noteCategoryIds: $noteCategoryIds, projectId: $projectId) {
+      newSequenceIds
+    }
+}
+
+`
+
+export const MOVE_NOTE = gql`
+mutation moveNote(
+    $sourceCategoryId: ID!
+    $destinationCategoryId: ID!
+    $noteId: ID!
+    $projectId: ID!
+) {
+    moveNote( sourceCategoryId: $sourceCategoryId, destinationCategoryId: $destinationCategoryId, noteId: $noteId, projectId: $projectId ) {
+      message
+      sourceCategoryId
+      destinationCategoryId
+      noteId
+      }
 }
 
 `

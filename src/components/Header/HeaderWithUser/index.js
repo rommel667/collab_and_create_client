@@ -66,7 +66,7 @@ const HeaderWithUser = ({ user }) => {
 
     const confirmNewNoteCategoryHandler = () => {
         newNoteCategory()
-        setOpenNewTaskColumnModal(false)
+        setOpenNewNoteCategoryModal(false)
     }
 
     return (
@@ -75,6 +75,7 @@ const HeaderWithUser = ({ user }) => {
             <BottomHeader
                 setOpenNewProjectModal={() => setOpenNewProjectModal(true)}
                 setOpenNewTaskColumnModal={() => setOpenNewTaskColumnModal(true)}
+                setOpenNewNoteCategoryModal={() => setOpenNewNoteCategoryModal(true)}
             />
             
             <ModalComponent

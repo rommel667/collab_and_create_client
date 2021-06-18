@@ -4,18 +4,18 @@ import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router-dom'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import DroppableComponent from './DroppableComponent'
-import { getItemStyle, move, moveTaskNewData, reorder } from './functions'
+import { getItemStyle, move, moveNoteNewData, reorder } from './functions'
 import NewTask from '../../Forms/NewTask'
 import ModalComponent from '../../SharedComponents/ModalComponent'
-import { PROJECTS_BY_USER, PROJECT_NOTES, PROJECT_TASKS } from '../../../graphql/projects'
-import { NEW_NOTE } from '../../../graphql/note'
+import { PROJECTS_BY_USER, PROJECT_NOTES } from '../../../graphql/projects'
+import { MOVE_NOTE, MOVE_NOTE_CATEGORY, NEW_NOTE } from '../../../graphql/note'
 
 
 const Notes = () => {
 
     const dispatch = useDispatch()
     const noteCategories = useSelector(state => state.note.noteCategories)
-    const newTaskData = useSelector(state => state.form.newTask)
+    const newNoteData = useSelector(state => state.form.newNote)
     const projects = useSelector(state => state.project.projects)
 
     const [openNewNoteModal, setOpenNewNoteModal] = useState(false)
@@ -33,94 +33,94 @@ const Notes = () => {
         })
 
     useEffect(() => {
+        console.log("HELLLO",noteCategories);
         if(projects === null) {
             fetchProjects()
         }
         dispatch({ type: "UPDATE_PROJECT_ID_FOR_NOTE", payload: { projectId } })
-    }, [])
+    }, [noteCategories])
 
 
-    // const [moveTask] = useMutation(MOVE_TASK, {
-    //     update(proxy, result) {
-    //         const { sourceColumnId, destinationColumnId, taskId } = result.data.moveTask
-          
-    //         const data = proxy.readQuery({
-    //             query: PROJECT_TASKS,
-    //             variables: { projectId },
-    //         });
-    //         if (data) {
-    //             const newData = moveTaskNewData(data, sourceColumnId, destinationColumnId, taskId)
-    //             proxy.writeQuery({
-    //                 query: PROJECT_TASKS,
-    //                 variables: { projectId },
-    //                 data: { projectInfo: { ...newData } }
-    //             });
-    //             setUpdating(false)
-    //         } else {
-    //             return
-    //         }
-    //         // PENDING DISPATCH SOLUTION IF UPDATE FAILED ON SERVER/DB
-    //     },
-    //     // variables & updateTaskColumns for moved task for the redux state dispatch @ onDragEnd function
-    // })
+    const [moveNote] = useMutation(MOVE_NOTE, {
+        update(proxy, result) {
+            const { sourceCategoryId, destinationCategoryId, noteId } = result.data.moveNote
+            const data = proxy.readQuery({
+                query: PROJECT_NOTES,
+                variables: { projectId },
+            });
+            if (data) {
+                const newData = moveNoteNewData(data, sourceCategoryId, destinationCategoryId, noteId)
+                proxy.writeQuery({
+                    query: PROJECT_NOTES,
+                    variables: { projectId },
+                    data: { projectInfo: { ...newData } }
+                });
+                setUpdating(false)
+            } else {
+                return
+            }
+            // PENDING DISPATCH SOLUTION IF UPDATE FAILED ON SERVER/DB
+        },
+        // variables & updateTaskColumns for moved task for the redux state dispatch @ onDragEnd function
+    })
 
 
 
-    // const [moveTaskColumn] = useMutation(MOVE_TASK_COLUMN, {
-    //     update(proxy, result) {
-    //         const data = proxy.readQuery({
-    //             query: PROJECT_TASKS,
-    //             variables: { projectId },
-    //         });
-    //         const updatedTaskColumns = []
-    //         result.data.moveTaskColumn.newSequenceIds.map((seq, index) => {
-    //             data.projectInfo.taskColumns.map(col => {
-    //                 if (seq === col._id) {
-    //                     updatedTaskColumns.push({ ...col, sequence: index + 1 })
-    //                 }
-    //                 return null
-    //             })
-    //             return null
-    //         })
-    //         proxy.writeQuery({
-    //             query: PROJECT_TASKS,
-    //             variables: { projectId },
-    //             data: {
-    //                 projectInfo: {
-    //                     ...data.projectInfo,
-    //                     taskColumns: [...updatedTaskColumns]
-    //                 }
-    //             }
-    //         });
-    //         //variables & newColumnOrder for redux state dispatch @ onDragEnd function
-    //     },
-    // })
+    const [moveNoteCategory] = useMutation(MOVE_NOTE_CATEGORY, {
+        update(proxy, result) {
+            const data = proxy.readQuery({
+                query: PROJECT_NOTES,
+                variables: { projectId },
+            });
+            const updatedNoteCategories = []
+            result.data.moveNoteCategory.newSequenceIds.map((seq, index) => {
+                data.projectInfo.noteCategories.map(cat => {
+                    if (seq === cat._id) {
+                        updatedNoteCategories.push({ ...cat, sequence: index + 1 })
+                    }
+                    return null
+                })
+                return null
+            })
+            proxy.writeQuery({
+                query: PROJECT_NOTES,
+                variables: { projectId },
+                data: {
+                    projectInfo: {
+                        ...data.projectInfo,
+                        noteCategories: [...updatedNoteCategories]
+                    }
+                }
+            });
+            //variables & newColumnOrder for redux state dispatch @ onDragEnd function
+        },
+    })
 
 
     const [newNote] = useMutation(NEW_NOTE, {
         update(proxy, result) {
             const data = proxy.readQuery({
-                query: PROJECT_TASKS,
+                query: PROJECT_NOTES,
                 variables: { projectId },
             });
-            const targetColumn = data.projectInfo.taskColumns.find(col => col._id === result.data.newTask.columnId)
-            const updatedTasks = [...targetColumn.tasks, result.data.newTask]
-            const updatedColumn = { ...targetColumn, tasks: [...updatedTasks] }
+            const targetCategory = data.projectInfo.noteCategories.find(cat => cat._id === result.data.newNote.categoryId)
+            const updatedNotes = [...targetCategory.notes, result.data.newNote]
+            const updatedCategory = { ...targetCategory, tasks: [...updatedNotes] }
             proxy.writeQuery({
-                query: PROJECT_TASKS,
+                query: PROJECT_NOTES,
                 variables: { projectId },
                 data: {
                     projectInfo: {
                         ...data.projectInfo,
-                        taskColumns: [...data.projectInfo.taskColumns.filter(col => col._id !== result.data.newTask.columnId), updatedColumn]
+                        noteCategories: [...data.projectInfo.noteCategories.filter(cat => cat._id !== result.data.newNote.categoryId), updatedCategory]
                     }
                 }
 
             });
-            dispatch({ type: "NEW_TASK", payload: { columnId: newTaskData.columnId, newTask: result.data.newTask } })
+            dispatch({ type: "NEW_NOTE", payload: { categoryId: newNoteData.categoryId, newNote: result.data.newNote } })
             dispatch({ type: "RESET_INPUTS" })
         },
-        variables: { ...newTaskData }
+        variables: { ...newNoteData }
     })
 
 
@@ -146,43 +146,43 @@ const Notes = () => {
         setOpenNewNoteModal(false)
     }
 
-    // function onDragEnd(result) {
-    //     const { source, destination, draggableId, type } = result;
-    //     // dropped outside the list
-    //     if (!destination || updating) {
-    //         return;
-    //     }
+    function onDragEnd(result) {
+        const { source, destination, draggableId, type } = result;
+        // dropped outside the list
+        if (!destination || updating) {
+            return;
+        }
 
-    //     if (type === "column") {
-    //         const newColumnOrder = Array.from(taskColumns)
-    //         const target = newColumnOrder[source.index]
-    //         newColumnOrder.splice(source.index, 1)
-    //         newColumnOrder.splice(destination.index, 0, target)
-    //         const taskColumnIds = newColumnOrder.map(col => col._id)
-    //         moveTaskColumn({ variables: { taskColumnIds, projectId } })
-    //         dispatch({ type: "ON_DRAG_END_COLUMN", payload: { newColumnOrder } })
-    //         return
-    //     }
+        if (type === "row") {
+            const newCategoryOrder = Array.from(noteCategories)
+            const target = newCategoryOrder[source.index]
+            newCategoryOrder.splice(source.index, 1)
+            newCategoryOrder.splice(destination.index, 0, target)
+            const noteCategoryIds = newCategoryOrder.map(col => col._id)
+            moveNoteCategory({ variables: { noteCategoryIds, projectId } })
+            dispatch({ type: "ON_DRAG_END_NOTE_CATEGORY", payload: { newCategoryOrder } })
+            return
+        }
 
-    //     const sId = source.droppableId;
-    //     const dId = destination.droppableId;
+        const sId = source.droppableId;
+        const dId = destination.droppableId;
 
-    //     if (sId === dId) {
-    //         const tasks = reorder(taskColumns.find(c => c._id === sId).tasks, source.index, destination.index);
-    //         const newTaskColumns = [...taskColumns];
-    //         newTaskColumns[newTaskColumns.findIndex(c => c._id === sId)] = { ...newTaskColumns[newTaskColumns.findIndex(c => c._id === sId)], tasks }
-    //         dispatch({ type: "ON_DRAG_END_TASK", payload: { newTaskColumns } })
-    //     } else {
-    //         const result = move(taskColumns.find(c => c._id === sId), taskColumns.find(c => c._id === dId), source, destination);
-    //         const newTaskColumns = [...taskColumns];
-    //         newTaskColumns[newTaskColumns.findIndex(c => c._id === sId)] = result[sId];
-    //         newTaskColumns[newTaskColumns.findIndex(c => c._id === dId)] = result[dId];
-    //         dispatch({ type: "ON_DRAG_END_TASK", payload: { newTaskColumns } })
-    //         setUpdating(true)
-    //         moveTask({ variables: { sourceColumnId: sId, destinationColumnId: dId, taskId: draggableId, projectId } })
-    //         //   setTasks(newTasks.filter(group => group.length));
-    //     }
-    // }
+        if (sId === dId) {
+            const notes = reorder(noteCategories.find(c => c._id === sId).notes, source.index, destination.index);
+            const newNoteCategories = [...noteCategories];
+            newNoteCategories[newNoteCategories.findIndex(c => c._id === sId)] = { ...newNoteCategories[newNoteCategories.findIndex(c => c._id === sId)], notes }
+            dispatch({ type: "ON_DRAG_END_NOTE", payload: { newNoteCategories } })
+        } else {
+            const result = move(noteCategories.find(c => c._id === sId), noteCategories.find(c => c._id === dId), source, destination);
+            const newNoteCategories = [...noteCategories];
+            newNoteCategories[newNoteCategories.findIndex(c => c._id === sId)] = result[sId];
+            newNoteCategories[newNoteCategories.findIndex(c => c._id === dId)] = result[dId];
+            dispatch({ type: "ON_DRAG_END_NOTE", payload: { newNoteCategories } })
+            setUpdating(true)
+            moveNote({ variables: { sourceCategoryId: sId, destinationCategoryId: dId, noteId: draggableId, projectId } })
+            //   setTasks(newTasks.filter(group => group.length));
+        }
+    }
 
 
     return (
@@ -205,11 +205,11 @@ const Notes = () => {
 
                 <DragDropContext onDragEnd={onDragEnd} className="p-3">
 
-                    <Droppable droppableId={projectId} direction="horizontal" type="column" >
+                    <Droppable droppableId={projectId} direction="vertical" type="row" >
                         {(provided, snapshot) => {
                             return (
                                 <div
-                                    className={`${snapshot.isDraggingOver ? "bg-blue-200" : ""} flex flex-row flex-1 gap-2`}
+                                    className={`${snapshot.isDraggingOver ? "bg-blue-200" : ""} flex flex-col flex-1 gap-2`}
                                     ref={provided.innerRef}
                                     {...provided.droppableProps}
                                 >

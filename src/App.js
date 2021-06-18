@@ -9,7 +9,7 @@ import { useParams } from 'react-router';
 import { MOVE_TASK_COLUMN_SUBSCRIPTION, NEW_TASK_SUBSCRIPTION, MOVE_TASK_SUBSCRIPTION } from './graphql/task';
 import { FETCH_COLLEAGUES } from './graphql/dev';
 import { PROJECTS_BY_USER, PROJECT_TASKS } from './graphql/projects';
-import { moveTaskSubNewData, newTaskSubNewData } from './utils/taskFunctions';
+import { moveTaskSubNewData, newTaskSubNewData } from './utils/cacheData/subscription';
 // import { Offline, Online } from "react-detect-offline";
 
 

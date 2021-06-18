@@ -4,7 +4,7 @@ const initialState = {
 
 
 const note = (state = initialState, action) => {
-   
+   console.log(action);
     switch(action.type) {
         case "FETCH_NOTE_CATEGORIES": {
             return {
@@ -15,7 +15,7 @@ const note = (state = initialState, action) => {
         case "NEW_NOTE_CATEGORY": {
             return {
                 ...state,
-                noteCategories: [ ...state.noteCategories, action.payload.noteCategory ]
+                noteCategories: [ ...state.noteCategories, action.payload.newNoteCategory ]
             }
         }
         case "NEW_NOTE": {

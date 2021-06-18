@@ -162,7 +162,7 @@ const Tasks = () => {
             newColumnOrder.splice(destination.index, 0, target)
             const taskColumnIds = newColumnOrder.map(col => col._id)
             moveTaskColumn({ variables: { taskColumnIds, projectId } })
-            dispatch({ type: "ON_DRAG_END_COLUMN", payload: { newColumnOrder } })
+            dispatch({ type: "ON_DRAG_END_TASK_COLUMN", payload: { newColumnOrder } })
             return
         }
 
@@ -211,7 +211,7 @@ const Tasks = () => {
                         {(provided, snapshot) => {
                             return (
                                 <div
-                                    className={`${snapshot.isDraggingOver ? "bg-blue-200" : ""} flex flex-row flex-1 gap-2`}
+                                    className={`${snapshot.isDraggingOver ? "bg-blue-200" : ""} flex flex-row w-full gap-2`}
                                     ref={provided.innerRef}
                                     {...provided.droppableProps}
                                 >

@@ -38,6 +38,8 @@ import { gql } from '@apollo/client';
 // `
 
 
+//QUERIES
+
 export const PROJECTS_BY_USER = gql`
 query projectsByUser {
     projectsByUser {
@@ -243,6 +245,7 @@ query projectInfo(
 
 `
 
+//MUTATIONS
 
 export const NEW_PROJECT = gql`
 mutation newProject(
@@ -290,3 +293,25 @@ mutation newProject(
 }
 
 `
+
+
+//SUBSCRIPTIONS
+
+export const NEW_PROJECT_SUBSCRIPTION = gql`
+  subscription onNewProject($userId: ID!) {
+    newProject(userId: $userId) {
+        _id
+        projectName
+        description
+        techStacks
+        createdBy {
+          _id
+          email
+          name
+          photo
+        }
+        createdAt
+        updatedAt
+    }
+  }
+`;

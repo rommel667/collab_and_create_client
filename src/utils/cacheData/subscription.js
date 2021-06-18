@@ -19,3 +19,25 @@ export const moveTaskSubNewData = (project, sourceColumnId, destinationColumnId,
     ]
     return updatedTaskColumns
 }
+
+export const newNoteSubNewData = (project, subscriptionData) => {
+    const targetCategory = project.noteCategories.find(cat => cat._id === subscriptionData.data.newNote.categoryId)
+    const updatedNotes = [...targetCategory.notes, subscriptionData.data.newNote]
+    const updatedCategory = { ...targetCategory, notes: [...updatedNotes] }
+    return updatedCategory
+}
+
+export const moveNoteSubNewData = (project, sourceCategoryId, destinationCategoryId, noteId) => {
+    const filteredCategories = project.noteCategories.filter(cat => cat._id !== sourceCategoryId && cat._id !== destinationCategoryId)
+    const sourceCategory = project.noteCategories.find(cat => cat._id === sourceCategoryId)
+    const targetNote = sourceCategory.notes.find(note => note._id === noteId)
+    const updatedSourceCategory = { ...sourceCategory, notes: [...sourceCategory.notes.filter(note => note._id !== noteId)] }
+    const destinationCategory = project.noteCategories.find(cat => cat._id === destinationCategoryId)
+    const updatedDestinationCategory = { ...destinationCategory, notes: [targetNote, ...destinationCategory.notes] }
+    const updatedTaskCategories = [
+        ...filteredCategories,
+        updatedSourceCategory,
+        updatedDestinationCategory
+    ]
+    return updatedTaskCategories
+}

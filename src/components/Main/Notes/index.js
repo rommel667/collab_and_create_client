@@ -5,9 +5,9 @@ import { useParams } from 'react-router-dom'
 import { DragDropContext, Droppable } from 'react-beautiful-dnd'
 import DroppableComponent from './DroppableComponent'
 import { getItemStyle, move, moveNoteNewData, reorder } from './functions'
-import NewTask from '../../Forms/NewTask'
+import NewNote from '../../Forms/NewNote'
 import ModalComponent from '../../SharedComponents/ModalComponent'
-import { PROJECTS_BY_USER, PROJECT_NOTES } from '../../../graphql/projects'
+import { PROJECTS_BY_USER, PROJECT_INFO } from '../../../graphql/projects'
 import { MOVE_NOTE, MOVE_NOTE_CATEGORY, NEW_NOTE } from '../../../graphql/note'
 
 
@@ -45,13 +45,13 @@ const Notes = () => {
         update(proxy, result) {
             const { sourceCategoryId, destinationCategoryId, noteId } = result.data.moveNote
             const data = proxy.readQuery({
-                query: PROJECT_NOTES,
+                query: PROJECT_INFO,
                 variables: { projectId },
             });
             if (data) {
                 const newData = moveNoteNewData(data, sourceCategoryId, destinationCategoryId, noteId)
                 proxy.writeQuery({
-                    query: PROJECT_NOTES,
+                    query: PROJECT_INFO,
                     variables: { projectId },
                     data: { projectInfo: { ...newData } }
                 });
@@ -69,7 +69,7 @@ const Notes = () => {
     const [moveNoteCategory] = useMutation(MOVE_NOTE_CATEGORY, {
         update(proxy, result) {
             const data = proxy.readQuery({
-                query: PROJECT_NOTES,
+                query: PROJECT_INFO,
                 variables: { projectId },
             });
             const updatedNoteCategories = []
@@ -83,7 +83,7 @@ const Notes = () => {
                 return null
             })
             proxy.writeQuery({
-                query: PROJECT_NOTES,
+                query: PROJECT_INFO,
                 variables: { projectId },
                 data: {
                     projectInfo: {
@@ -100,14 +100,14 @@ const Notes = () => {
     const [newNote] = useMutation(NEW_NOTE, {
         update(proxy, result) {
             const data = proxy.readQuery({
-                query: PROJECT_NOTES,
+                query: PROJECT_INFO,
                 variables: { projectId },
             });
             const targetCategory = data.projectInfo.noteCategories.find(cat => cat._id === result.data.newNote.categoryId)
             const updatedNotes = [...targetCategory.notes, result.data.newNote]
             const updatedCategory = { ...targetCategory, tasks: [...updatedNotes] }
             proxy.writeQuery({
-                query: PROJECT_NOTES,
+                query: PROJECT_INFO,
                 variables: { projectId },
                 data: {
                     projectInfo: {
@@ -125,7 +125,7 @@ const Notes = () => {
 
 
     const { loading, data } = useQuery(
-        PROJECT_NOTES,
+        PROJECT_INFO,
         {
             variables: { projectId },
             onCompleted: () => {
@@ -136,9 +136,9 @@ const Notes = () => {
             }
         })
 
-    const onOpenNewNoteModal = (columnId) => {
+    const onOpenNewNoteModal = (categoryId) => {
         setOpenNewNoteModal(true)
-        dispatch({ type: "TASK_COLUMN_ID", payload: { columnId } })
+        dispatch({ type: "NOTE_CATEGORY_ID", payload: { categoryId } })
     }
 
     const confirmNewNoteHandler = () => {
@@ -167,6 +167,11 @@ const Notes = () => {
         const sId = source.droppableId;
         const dId = destination.droppableId;
 
+        const notes = reorder(noteCategories.find(c => c._id === sId).notes, source.index, destination.index);
+        const newNoteCategories = [...noteCategories];
+        newNoteCategories[newNoteCategories.findIndex(c => c._id === sId)] = { ...newNoteCategories[newNoteCategories.findIndex(c => c._id === sId)], notes }
+        dispatch({ type: "ON_DRAG_END_NOTE", payload: { newNoteCategories } })
+
         if (sId === dId) {
             const notes = reorder(noteCategories.find(c => c._id === sId).notes, source.index, destination.index);
             const newNoteCategories = [...noteCategories];
@@ -180,7 +185,6 @@ const Notes = () => {
             dispatch({ type: "ON_DRAG_END_NOTE", payload: { newNoteCategories } })
             setUpdating(true)
             moveNote({ variables: { sourceCategoryId: sId, destinationCategoryId: dId, noteId: draggableId, projectId } })
-            //   setTasks(newTasks.filter(group => group.length));
         }
     }
 
@@ -200,7 +204,7 @@ const Notes = () => {
                     cancel={() => setOpenNewNoteModal(false)}
                     modalTitle="New Note"
                 >
-                    <NewTask />
+                    <NewNote />
                 </ModalComponent>
 
                 <DragDropContext onDragEnd={onDragEnd} className="p-3">

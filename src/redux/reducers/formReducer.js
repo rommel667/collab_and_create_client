@@ -166,6 +166,7 @@ const form = (state = initialState, action) => {
                 }
             }
         }
+        
 
         //FOR ALL FORMS
         case "RESET_INPUTS": {

@@ -125,7 +125,7 @@ query projectsByUser {
 
 
 
-export const PROJECT_TASKS = gql`
+export const PROJECT_INFO = gql`
 query projectInfo(
     $projectId: ID!
 ) {
@@ -181,41 +181,7 @@ query projectInfo(
           updatedAt
         }
       }
-    createdAt
-    updatedAt
-    }
-}
-
-`
-
-export const PROJECT_NOTES = gql`
-query projectInfo(
-    $projectId: ID!
-) {
-  projectInfo(projectId: $projectId) {
-    _id
-    projectName
-    description
-    icon
-    status
-    techStacks
-    createdBy {
-      _id
-      name
-      photo
-    }
-    confirmedMembers {
-        _id
-        name
-        email
-        photo
-    }
-    unconfirmMembers {
-      _id
-      name
-      photo
-    }
-    noteCategories {
+      noteCategories {
         _id
         categoryName
         sequence
@@ -244,6 +210,63 @@ query projectInfo(
 }
 
 `
+
+// export const PROJECT_NOTES = gql`
+// query projectInfo(
+//     $projectId: ID!
+// ) {
+//   projectInfo(projectId: $projectId) {
+//     _id
+//     projectName
+//     description
+//     icon
+//     status
+//     techStacks
+//     createdBy {
+//       _id
+//       name
+//       photo
+//     }
+//     confirmedMembers {
+//         _id
+//         name
+//         email
+//         photo
+//     }
+//     unconfirmMembers {
+//       _id
+//       name
+//       photo
+//     }
+//     noteCategories {
+//         _id
+//         categoryName
+//         sequence
+//         createdBy {
+//           _id
+//           name
+//           email
+//           photo
+//         }
+//         notes {
+//           _id
+//           description
+//           createdBy {
+//             _id
+//             name
+//             email
+//             photo
+//           }
+//           createdAt
+//           updatedAt
+//         }
+//       }
+//     createdAt
+//     updatedAt
+//     }
+// }
+
+// `
 
 //MUTATIONS
 

@@ -4,8 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import TextArea from '../SharedComponents/TextArea'
 
 
-
-
 const NewNote = () => {
 
     const dispatch = useDispatch()

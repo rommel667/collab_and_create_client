@@ -2,6 +2,7 @@ import { useDispatch, useSelector } from "react-redux"
 import { useParams } from "react-router-dom"
 import ProjectSubscription from "./ProjectSubscription"
 import TaskSubscription from "./TaskSubscription"
+import NoteSubscription from "./NoteSubscription"
 
 const Subscriptions = () => {
 
@@ -13,6 +14,7 @@ const Subscriptions = () => {
         <>
         <ProjectSubscription dispatch={dispatch} user={user} />
         <TaskSubscription dispatch={dispatch} user={user} projectId={projectId} />
+        <NoteSubscription dispatch={dispatch} user={user} projectId={projectId} />
         </>
     )
 }

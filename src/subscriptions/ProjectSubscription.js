@@ -1,5 +1,4 @@
 import { useSubscription } from "@apollo/client";
-import { useDispatch, useSelector } from "react-redux";
 import { NEW_PROJECT_SUBSCRIPTION } from "../graphql/projects";
 
 const ProjectSubscription = ({ dispatch, user }) => {

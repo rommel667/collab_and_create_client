@@ -95,3 +95,36 @@ mutation moveNote(
 `
 
 //SUBSCRIPTIONS
+
+export const NEW_NOTE_SUBSCRIPTION = gql`
+subscription newNote($userId: ID!) {
+    newNote(userId: $userId) {
+      _id
+      description
+      categoryId
+      projectId
+      createdBy {
+        _id
+        name
+        email
+        photo
+      }
+      createdAt
+      updatedAt
+    }
+}
+
+`
+
+export const MOVE_NOTE_SUBSCRIPTION = gql`
+subscription moveNote($userId: ID!) {
+    moveNote(userId: $userId) {
+      message
+      sourceCategoryId
+      destinationCategoryId
+      noteId
+      projectId
+    }
+}
+
+`

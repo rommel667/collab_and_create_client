@@ -1,40 +1,39 @@
 import { useSubscription } from "@apollo/client";
+import { MOVE_NOTE_SUBSCRIPTION, NEW_NOTE_SUBSCRIPTION } from "../graphql/note";
 import { PROJECTS_BY_USER, PROJECT_INFO } from "../graphql/projects";
-import { MOVE_TASK_COLUMN_SUBSCRIPTION, MOVE_TASK_SUBSCRIPTION, NEW_TASK_SUBSCRIPTION } from "../graphql/task";
-import { moveTaskSubNewData, newTaskSubNewData } from "../utils/cacheData/subscription";
+import { moveNoteSubNewData, newNoteSubNewData } from "../utils/cacheData/subscription";
 
-const TaskSubscription = ({ user, dispatch, projectId }) => {
+const NoteSubscription = ({ dispatch, user, projectId }) => {
 
-
-    const { loading: taskLoading, data: taskData } = useSubscription(NEW_TASK_SUBSCRIPTION,
+    const { loading: noteLoading, data: noteData } = useSubscription(NEW_NOTE_SUBSCRIPTION,
         {
           variables: { userId: user?._id },
           onSubscriptionData: ({ client, subscriptionData }) => {
             const data = client.readQuery({
               query: PROJECT_INFO,
-              variables: { projectId: subscriptionData.data.newTask.projectId },
+              variables: { projectId: subscriptionData.data.newNote.projectId },
             });
             const data1 = client.readQuery({
               query: PROJECTS_BY_USER,
             });
             if (data) {
               console.log("PROJECT INFO");
-              const updatedColumn = newTaskSubNewData(data.projectInfo, subscriptionData)
+              const updatedCategory = newNoteSubNewData(data.projectInfo, subscriptionData)
               client.writeQuery({
                 query: PROJECT_INFO,
                 variables: { projectId },
                 data: {
                   projectInfo: {
                     ...data.projectInfo,
-                    taskColumns: [...data.projectInfo.taskColumns.filter(col => col._id !== subscriptionData.data.newTask.columnId), updatedColumn]
+                    noteCategories: [...data.projectInfo.noteCategories.filter(cat => cat._id !== subscriptionData.data.newNote.categoryId), updatedCategory]
                   }
                 }
               });
               dispatch({
-                type: "NEW_TASK_SUBSCRIPTION_PROJECT_UPDATE", payload: {
+                type: "NEW_NOTE_SUBSCRIPTION_PROJECT_UPDATE", payload: {
                   project: {
                     ...data.projectInfo,
-                    taskColumns: [...data.projectInfo.taskColumns.filter(col => col._id !== subscriptionData.data.newTask.columnId), updatedColumn]
+                    noteCategories: [...data.projectInfo.noteCategories.filter(cat => cat._id !== subscriptionData.data.newNote.categoryId), updatedCategory]
                   }
                 }
               })
@@ -43,10 +42,10 @@ const TaskSubscription = ({ user, dispatch, projectId }) => {
                 console.log("PROJECT BY USER");
                 const filteredProjects = data1.projectsByUser.filter(p => p._id !== subscriptionData.data.newTask.projectId)
                 const targetProject = data1.projectsByUser.find(p => p._id === subscriptionData.data.newTask.projectId)
-                const updatedColumn = newTaskSubNewData(targetProject, subscriptionData)
+                const updatedCategory = newNoteSubNewData(targetProject, subscriptionData)
                 const updatedProject = {
-                  ...targetProject, taskColumns: [
-                    ...targetProject.taskColumns.filter(col => col._id !== subscriptionData.data.newTask.columnId), updatedColumn
+                  ...targetProject, noteCategories: [
+                    ...targetProject.noteCategories.filter(col => col._id !== subscriptionData.data.newNote.categoryId), updatedCategory
                   ]
                 }
                 const newData = [...filteredProjects, updatedProject]
@@ -66,16 +65,17 @@ const TaskSubscription = ({ user, dispatch, projectId }) => {
               return
             }
     
-            dispatch({ type: "NEW_TASK_SUBSCRIPTION", payload: { newTask: subscriptionData.data.newTask } })
+            dispatch({ type: "NEW_NOTE_SUBSCRIPTION", payload: { newNote: subscriptionData.data.newNote } })
           },
         }
       );
-    
-      const { loading: moveTaskLoading, data: moveTaskData } = useSubscription(MOVE_TASK_SUBSCRIPTION,
+
+
+      const { loading: moveNoteLoading, data: moveNoteData } = useSubscription(MOVE_NOTE_SUBSCRIPTION,
         {
           variables: { userId: user?._id },
           onSubscriptionData: ({ client, subscriptionData }) => {
-            const { sourceColumnId, destinationColumnId, taskId, projectId } = subscriptionData.data.moveTask
+            const { sourceCategoryId, destinationCategoryId, noteId, projectId } = subscriptionData.data.moveNote
             const data = client.readQuery({
               query: PROJECT_INFO,
               variables: { projectId },
@@ -85,9 +85,9 @@ const TaskSubscription = ({ user, dispatch, projectId }) => {
             });
             if (data) {
               console.log("PROJECT INFO");
-              const updatedTaskColumns =  moveTaskSubNewData(data.projectInfo, sourceColumnId, destinationColumnId, taskId)
+              const updatedNoteCategories =  moveNoteSubNewData(data.projectInfo, sourceCategoryId, destinationCategoryId, noteId)
               const newData = {
-                ...data.projectInfo, taskColumns: [...updatedTaskColumns]
+                ...data.projectInfo, noteCategories: [...updatedNoteCategories]
               }
               client.writeQuery({
                 query: PROJECT_INFO,
@@ -95,7 +95,7 @@ const TaskSubscription = ({ user, dispatch, projectId }) => {
                 data: { projectInfo: { ...newData } }
               });
               dispatch({
-                type: "MOVE_TASK_SUBSCRIPTION_PROJECT_UPDATE", payload: {
+                type: "MOVE_NOTE_SUBSCRIPTION_PROJECT_UPDATE", payload: {
                   project: {
                     ...newData
                   }
@@ -106,11 +106,10 @@ const TaskSubscription = ({ user, dispatch, projectId }) => {
                 console.log("PROJECT BY USER");
                 const filteredProjects = data1.projectsByUser.filter(p => p._id !== projectId)
                 const targetProject = data1.projectsByUser.find(p => p._id === projectId)
-                const updatedTaskColumns =  moveTaskSubNewData(targetProject, sourceColumnId, destinationColumnId, taskId)
+                const updatedNoteCategories =  moveNoteSubNewData(targetProject, sourceCategoryId, destinationCategoryId, noteId)
                 const newData = {
-                  ...targetProject, taskColumns: [...updatedTaskColumns]
+                  ...targetProject, noteCategories: [...updatedNoteCategories]
                 }
-                console.log(newData);
                 client.writeQuery({
                   query: PROJECTS_BY_USER,
                   data: {
@@ -128,46 +127,12 @@ const TaskSubscription = ({ user, dispatch, projectId }) => {
               return
             }
     
-            dispatch({ type: "MOVE_TASK_SUBSCRIPTION", payload: { moveTask: subscriptionData.data.moveTask } })
+            dispatch({ type: "MOVE_NOTE_SUBSCRIPTION", payload: { moveNote: subscriptionData.data.moveNote } })
           }
         }
       );
     
-      const { loading: moveTaskColumnLoading, data: moveTaskColumnData } = useSubscription(MOVE_TASK_COLUMN_SUBSCRIPTION,
-        {
-          variables: { userId: user?._id },
-          onSubscriptionData: ({ client, subscriptionData }) => {
-            const data = client.readQuery({
-              query: PROJECT_INFO,
-              variables: { projectId: subscriptionData.data.moveTaskColumn.projectId },
-            });
-            const updatedTaskColumns = []
-            subscriptionData.data.moveTaskColumn.newSequenceIds.map((seq, index) => {
-              data.projectInfo.taskColumns.map(col => {
-                if (seq === col._id) {
-                  updatedTaskColumns.push({ ...col, sequence: index + 1 })
-                }
-                return null
-              })
-              return null
-            })
-            client.writeQuery({
-              query: PROJECT_INFO,
-              variables: { projectId: subscriptionData.data.moveTaskColumn.projectId },
-              data: {
-                projectInfo: {
-                  ...data.projectInfo,
-                  taskColumns: [...updatedTaskColumns]
-                }
-              }
-            });
-            dispatch({ type: "MOVE_TASK_COLUMN_SUBSCRIPTION", payload: { newSequence: subscriptionData.data.moveTaskColumn.newSequenceIds } })
-          }
-        }
-      );
-
-      return null
-    
+    return null
 }
 
-export default TaskSubscription
+export default NoteSubscription

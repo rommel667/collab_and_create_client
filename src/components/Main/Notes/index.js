@@ -33,7 +33,6 @@ const Notes = () => {
         })
 
     useEffect(() => {
-        console.log("HELLLO",noteCategories);
         if(projects === null) {
             fetchProjects()
         }

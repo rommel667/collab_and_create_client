@@ -31,6 +31,7 @@ const App = () => {
     <div className="h-screen flex overflow-hidden">
       <Subscriptions />
       {user && <LeftMenu />}
+      <h1>Test Pull</h1>
       <div className="bg-white flex flex-col flex-1 min-w-0 flex-shrink-0">
         <Header user={user} />
         {user && <Main user={user} />}

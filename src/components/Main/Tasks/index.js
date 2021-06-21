@@ -8,8 +8,7 @@ import DroppableComponent from './DroppableComponent'
 import { getItemStyle, move, moveTaskNewData, reorder } from './functions'
 import NewTask from '../../Forms/NewTask'
 import ModalComponent from '../../SharedComponents/ModalComponent'
-import { PROJECTS_BY_USER, PROJECT_TASKS } from '../../../graphql/projects'
-
+import { PROJECTS_BY_USER, PROJECT_INFO } from '../../../graphql/projects'
 
 
 const Tasks = () => {
@@ -38,7 +37,7 @@ const Tasks = () => {
         if(projects === null) {
             fetchProjects()
         }
-        dispatch({ type: "UPDATE_PROJECT_ID", payload: { projectId } })
+        dispatch({ type: "UPDATE_PROJECT_ID_FOR_TASK", payload: { projectId } })
         
     }, [])
 
@@ -48,13 +47,13 @@ const Tasks = () => {
             const { sourceColumnId, destinationColumnId, taskId } = result.data.moveTask
           
             const data = proxy.readQuery({
-                query: PROJECT_TASKS,
+                query: PROJECT_INFO,
                 variables: { projectId },
             });
             if (data) {
                 const newData = moveTaskNewData(data, sourceColumnId, destinationColumnId, taskId)
                 proxy.writeQuery({
-                    query: PROJECT_TASKS,
+                    query: PROJECT_INFO,
                     variables: { projectId },
                     data: { projectInfo: { ...newData } }
                 });
@@ -72,7 +71,7 @@ const Tasks = () => {
     const [moveTaskColumn] = useMutation(MOVE_TASK_COLUMN, {
         update(proxy, result) {
             const data = proxy.readQuery({
-                query: PROJECT_TASKS,
+                query: PROJECT_INFO,
                 variables: { projectId },
             });
             const updatedTaskColumns = []
@@ -86,7 +85,7 @@ const Tasks = () => {
                 return null
             })
             proxy.writeQuery({
-                query: PROJECT_TASKS,
+                query: PROJECT_INFO,
                 variables: { projectId },
                 data: {
                     projectInfo: {
@@ -103,14 +102,14 @@ const Tasks = () => {
     const [newTask] = useMutation(NEW_TASK, {
         update(proxy, result) {
             const data = proxy.readQuery({
-                query: PROJECT_TASKS,
+                query: PROJECT_INFO,
                 variables: { projectId },
             });
             const targetColumn = data.projectInfo.taskColumns.find(col => col._id === result.data.newTask.columnId)
             const updatedTasks = [...targetColumn.tasks, result.data.newTask]
             const updatedColumn = { ...targetColumn, tasks: [...updatedTasks] }
             proxy.writeQuery({
-                query: PROJECT_TASKS,
+                query: PROJECT_INFO,
                 variables: { projectId },
                 data: {
                     projectInfo: {
@@ -128,7 +127,7 @@ const Tasks = () => {
 
 
     const { loading, data } = useQuery(
-        PROJECT_TASKS,
+        PROJECT_INFO,
         {
             variables: { projectId },
             onCompleted: () => {
@@ -163,7 +162,7 @@ const Tasks = () => {
             newColumnOrder.splice(destination.index, 0, target)
             const taskColumnIds = newColumnOrder.map(col => col._id)
             moveTaskColumn({ variables: { taskColumnIds, projectId } })
-            dispatch({ type: "ON_DRAG_END_COLUMN", payload: { newColumnOrder } })
+            dispatch({ type: "ON_DRAG_END_TASK_COLUMN", payload: { newColumnOrder } })
             return
         }
 
@@ -212,7 +211,7 @@ const Tasks = () => {
                         {(provided, snapshot) => {
                             return (
                                 <div
-                                    className={`${snapshot.isDraggingOver ? "bg-blue-200" : ""} flex flex-row flex-1 gap-2`}
+                                    className={`${snapshot.isDraggingOver ? "bg-blue-200" : ""} flex flex-row w-full gap-2`}
                                     ref={provided.innerRef}
                                     {...provided.droppableProps}
                                 >

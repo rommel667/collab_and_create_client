@@ -38,6 +38,8 @@ import { gql } from '@apollo/client';
 // `
 
 
+//QUERIES
+
 export const PROJECTS_BY_USER = gql`
 query projectsByUser {
     projectsByUser {
@@ -92,6 +94,29 @@ query projectsByUser {
             updatedAt
           }
         }
+        noteCategories {
+          _id
+          categoryName
+          sequence
+          createdBy {
+            _id
+            name
+            email
+            photo
+          }
+          notes {
+            _id
+            description
+            createdBy {
+              _id
+              name
+              email
+              photo
+            }
+            createdAt
+            updatedAt
+          }
+        }
       createdAt
       updatedAt
     }
@@ -100,7 +125,7 @@ query projectsByUser {
 
 
 
-export const PROJECT_TASKS = gql`
+export const PROJECT_INFO = gql`
 query projectInfo(
     $projectId: ID!
 ) {
@@ -156,6 +181,29 @@ query projectInfo(
           updatedAt
         }
       }
+      noteCategories {
+        _id
+        categoryName
+        sequence
+        createdBy {
+          _id
+          name
+          email
+          photo
+        }
+        notes {
+          _id
+          description
+          createdBy {
+            _id
+            name
+            email
+            photo
+          }
+          createdAt
+          updatedAt
+        }
+      }
     createdAt
     updatedAt
     }
@@ -163,6 +211,64 @@ query projectInfo(
 
 `
 
+// export const PROJECT_NOTES = gql`
+// query projectInfo(
+//     $projectId: ID!
+// ) {
+//   projectInfo(projectId: $projectId) {
+//     _id
+//     projectName
+//     description
+//     icon
+//     status
+//     techStacks
+//     createdBy {
+//       _id
+//       name
+//       photo
+//     }
+//     confirmedMembers {
+//         _id
+//         name
+//         email
+//         photo
+//     }
+//     unconfirmMembers {
+//       _id
+//       name
+//       photo
+//     }
+//     noteCategories {
+//         _id
+//         categoryName
+//         sequence
+//         createdBy {
+//           _id
+//           name
+//           email
+//           photo
+//         }
+//         notes {
+//           _id
+//           description
+//           createdBy {
+//             _id
+//             name
+//             email
+//             photo
+//           }
+//           createdAt
+//           updatedAt
+//         }
+//       }
+//     createdAt
+//     updatedAt
+//     }
+// }
+
+// `
+
+//MUTATIONS
 
 export const NEW_PROJECT = gql`
 mutation newProject(
@@ -210,3 +316,25 @@ mutation newProject(
 }
 
 `
+
+
+//SUBSCRIPTIONS
+
+export const NEW_PROJECT_SUBSCRIPTION = gql`
+  subscription onNewProject($userId: ID!) {
+    newProject(userId: $userId) {
+        _id
+        projectName
+        description
+        techStacks
+        createdBy {
+          _id
+          email
+          name
+          photo
+        }
+        createdAt
+        updatedAt
+    }
+  }
+`;

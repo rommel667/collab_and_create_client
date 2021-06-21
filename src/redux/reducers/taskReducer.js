@@ -38,7 +38,7 @@ const task = (state = initialState, action) => {
                 taskColumns: newTaskColumns
             }
         }
-        case "ON_DRAG_END_COLUMN": {
+        case "ON_DRAG_END_TASK_COLUMN": {
             return {
                 ...state,
                 taskColumns: action.payload.newColumnOrder

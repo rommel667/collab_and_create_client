@@ -2,22 +2,25 @@ import React, { useState } from 'react'
 import ModalComponent from '../../SharedComponents/ModalComponent'
 import NewProject from '../../Forms/NewProject'
 import NewTaskColumn from '../../Forms/NewTaskColumn'
+import NewNoteCategory from '../../Forms/NewNoteCategory'
 import { useDispatch, useSelector } from 'react-redux'
 import { useMutation } from '@apollo/client'
 import TopHeader from './TopHeader'
 import BottomHeader from './BottomHeader'
 import { NEW_PROJECT } from '../../../graphql/projects'
 import { NEW_TASK_COLUMN } from '../../../graphql/task'
+import { NEW_NOTE_CATEGORY } from '../../../graphql/note'
 
 const HeaderWithUser = ({ user }) => {
 
     const dispatch = useDispatch()
     const newProjectData = useSelector(state => state.form.newProject)
     const newTaskColumnData = useSelector(state => state.form.newTaskColumn)
+    const newNoteCategoryData = useSelector(state => state.form.newNoteCategory)
 
     const [openNewProjectModal, setOpenNewProjectModal] = useState(false)
     const [openNewTaskColumnModal, setOpenNewTaskColumnModal] = useState(false)
-
+    const [openNewNoteCategoryModal, setOpenNewNoteCategoryModal] = useState(false)
     
 
     const [newProject] = useMutation(NEW_PROJECT, {
@@ -41,6 +44,15 @@ const HeaderWithUser = ({ user }) => {
         variables: { ...newTaskColumnData }
     })
 
+    const [newNoteCategory] = useMutation(NEW_NOTE_CATEGORY, {
+        update(proxy, result) {
+            dispatch({ type: "NEW_NOTE_CATEGORY", payload: { newNoteCategory: result.data.newNoteCategory } })
+            dispatch({ type: "RESET_INPUTS" })
+
+        },
+        variables: { ...newNoteCategoryData }
+    })
+
     const confirmNewProjectHandler = () => {
         newProject()
         setOpenNewProjectModal(false)
@@ -52,12 +64,18 @@ const HeaderWithUser = ({ user }) => {
         setOpenNewTaskColumnModal(false)
     }
 
+    const confirmNewNoteCategoryHandler = () => {
+        newNoteCategory()
+        setOpenNewNoteCategoryModal(false)
+    }
+
     return (
         <header className="px-6 py-1 border-b-2 border-gray-200">
             <TopHeader />
             <BottomHeader
                 setOpenNewProjectModal={() => setOpenNewProjectModal(true)}
                 setOpenNewTaskColumnModal={() => setOpenNewTaskColumnModal(true)}
+                setOpenNewNoteCategoryModal={() => setOpenNewNoteCategoryModal(true)}
             />
             
             <ModalComponent
@@ -77,6 +95,15 @@ const HeaderWithUser = ({ user }) => {
                     modalTitle="New Task Column"
                 >
                     <NewTaskColumn />
+                </ModalComponent>
+                <ModalComponent
+                    open={openNewNoteCategoryModal}
+                    closeModal={() => setOpenNewNoteCategoryModal(false)}
+                    confirm={confirmNewNoteCategoryHandler}
+                    cancel={() => setOpenNewNoteCategoryModal(false)}
+                    modalTitle="New Notes Category"
+                >
+                    <NewNoteCategory />
                 </ModalComponent>
             
         </header>

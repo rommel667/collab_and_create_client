@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import { Draggable, Droppable } from "react-beautiful-dnd";
 import DraggableComponent from './DraggableComponent'
 
-const DroppableComponent = ({ taskColumns, getItemStyle, setOpen }) => {
+const DroppableComponent = ({ noteCategories, getItemStyle, setOpen }) => {
 
   return (
-    taskColumns.map((el, ind) => (
+    noteCategories.map((el, ind) => (
       <Draggable
         key={el._id}
         draggableId={el._id}
@@ -17,16 +17,16 @@ const DroppableComponent = ({ taskColumns, getItemStyle, setOpen }) => {
             ref={provided.innerRef}
             {...provided.draggableProps}
             {...provided.dragHandleProps}
-            className="bg-gray-400 rounded-md p-2 flex flex-col h-full w-full"
+            className="bg-gray-100 rounded-md p-2 flex flex-col h-full w-full"
             style={{ ...provided.draggableProps.style }}
           >
             <div className="flex flex-row justify-between items-center mb-2" {...provided.dragHandleProps}>
-              {el.columnName}
+              {el.categoryName}
               <svg onClick={() => setOpen(el._id)} xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 cursor-pointer" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
               </svg>
             </div>
-            <Droppable droppableId={el._id} type="task" index={ind}>
+            <Droppable droppableId={el._id} type="note" index={ind}>
               {(provided, snapshot) => {
                 return (
                   <div
@@ -35,7 +35,7 @@ const DroppableComponent = ({ taskColumns, getItemStyle, setOpen }) => {
                     {...provided.droppableProps}
                   >
                     <ul className="space-y-2 flex-1">
-                      <DraggableComponent tasks={el.tasks} getItemStyle={getItemStyle} />
+                      <DraggableComponent notes={el.notes} getItemStyle={getItemStyle} />
                     </ul>
                     {provided.placeholder}
                   </div>

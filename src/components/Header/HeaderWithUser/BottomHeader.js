@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux'
 import { useLocation } from 'react-router-dom'
 import BottomLeftLabel from './BottomLeftLabel'
 
-const BottomHeader = ({ setOpenNewProjectModal, setOpenNewTaskColumnModal }) => {
+const BottomHeader = ({ setOpenNewProjectModal, setOpenNewTaskColumnModal, setOpenNewNoteCategoryModal }) => {
 
     const location = useLocation()
 
@@ -15,6 +15,9 @@ const BottomHeader = ({ setOpenNewProjectModal, setOpenNewTaskColumnModal }) => 
         }
         if (location.pathname.split('/')[1] === "tasks") {
             setOpenNewTaskColumnModal()
+        }
+        if (location.pathname.split('/')[1] === "notes") {
+            setOpenNewNoteCategoryModal()
         }
     }
 
@@ -36,6 +39,7 @@ const BottomHeader = ({ setOpenNewProjectModal, setOpenNewTaskColumnModal }) => 
                     </svg>
                     {location.pathname.split('/')[1] === "projects" && "New Project"}
                     {location.pathname.split('/')[1] === "tasks" && "Add Column"}
+                    {location.pathname.split('/')[1] === "notes" && "Add Category"}
                 </button>
             </div>
 

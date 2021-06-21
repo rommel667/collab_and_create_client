@@ -53,14 +53,14 @@ const Project = ({ projects, _id, projectName, description, icon, confirmedMembe
 
             <div className="flex relative items-center justify-end">
                 <AiOutlineMore className="flex absolute -top-5 p-1" size={30} />
-                {/* <div className="flex absolute -top-5 gap-2 border-2 p-1">
+                <div className="flex absolute -top-5 gap-2 border-2 p-1">
                     <Link className="" to={`/tasks/${_id}`} onClick={getProjectData}>
                         <VscChecklist size={20} />
                     </Link>
                     <Link className="" to={`/notes/${_id}`} onClick={getProjectData}>
                         <VscSymbolEnum size={20} />
                     </Link>
-                </div> */}
+                </div>
             </div>
 
 
